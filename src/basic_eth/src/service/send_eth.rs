@@ -1,11 +1,11 @@
-use crate::{create_derivation_path, get_caller_pricipal, get_ecdsa_key_name};
+use crate::{create_derivation_path, get_caller_pricipal, get_ecdsa_key_name, get_rpc_service};
 use alloy::{
     network::{EthereumWallet, TransactionBuilder},
     primitives::{Address, U256},
     providers::{Provider, ProviderBuilder},
     rpc::types::request::TransactionRequest,
     signers::icp::IcpSigner,
-    transports::icp::{EthSepoliaService, IcpConfig, RpcService},
+    transports::icp::IcpConfig,
 };
 use candid::Nat;
 use core::panic;
@@ -27,7 +27,7 @@ async fn send_eth(to_address: String, amount: Nat) -> String {
 
     // Setup provider
     let wallet = EthereumWallet::from(signer);
-    let rpc_service = RpcService::EthSepolia(EthSepoliaService::Alchemy);
+    let rpc_service = get_rpc_service();
     let config = IcpConfig::new(rpc_service);
     let provider = ProviderBuilder::new()
         .with_recommended_fillers()

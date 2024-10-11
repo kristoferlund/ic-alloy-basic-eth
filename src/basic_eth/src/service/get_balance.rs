@@ -1,8 +1,8 @@
-use crate::{create_derivation_path, get_caller_pricipal, get_ecdsa_key_name};
+use crate::{create_derivation_path, get_caller_pricipal, get_ecdsa_key_name, get_rpc_service};
 use alloy::{
     providers::{Provider, ProviderBuilder},
     signers::{icp::IcpSigner, Signer},
-    transports::icp::{EthSepoliaService, IcpConfig, RpcService},
+    transports::icp::IcpConfig,
 };
 use candid::Principal;
 
@@ -19,7 +19,7 @@ async fn get_balance(principal: Option<Principal>) -> String {
         .unwrap();
 
     // Setup provider
-    let rpc_service = RpcService::EthSepolia(EthSepoliaService::Alchemy);
+    let rpc_service = get_rpc_service();
     let config = IcpConfig::new(rpc_service);
     let provider = ProviderBuilder::new().on_icp(config);
 

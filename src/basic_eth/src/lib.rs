@@ -1,5 +1,6 @@
 mod service;
 
+use alloy::transports::icp::{EthSepoliaService, RpcService};
 use candid::{Nat, Principal};
 use ic_cdk::export_candid;
 use serde_bytes::ByteBuf;
@@ -14,6 +15,15 @@ fn get_ecdsa_key_name() -> String {
         "ic" => "key_1".to_string(),
         _ => panic!("Unsupported network."),
     }
+}
+
+// Modify this function to determine which EVM network canister connects to
+fn get_rpc_service() -> RpcService {
+    RpcService::EthSepolia(EthSepoliaService::Alchemy)
+    // RpcService::EthMainnet(EthMainnetService::Alchemy)
+    // RpcService::BaseMainnet(L2MainnetService::Alchemy)
+    // RpcService::OptimismMainnet(L2MainnetService::Alchemy)
+    // RpcService::ArbitrumOne(L2MainnetService::Alchemy)
 }
 
 // The derivation path determines the Ethereum address generated
