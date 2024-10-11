@@ -9,9 +9,8 @@ pub async fn get_address(principal: Option<Principal>) -> String {
 
     // Setup signer
     let ecdsa_key_name = get_ecdsa_key_name();
-    let chain_id = 11155111;
     let derivation_path = create_derivation_path(&principal);
-    let signer = IcpSigner::new(derivation_path, &ecdsa_key_name, Some(chain_id))
+    let signer = IcpSigner::new(derivation_path, &ecdsa_key_name, None)
         .await
         .unwrap();
 

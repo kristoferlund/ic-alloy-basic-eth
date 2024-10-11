@@ -17,9 +17,8 @@ async fn send_eth(to_address: String, amount: Nat) -> String {
 
     // Setup signer
     let ecdsa_key_name = get_ecdsa_key_name();
-    let chain_id = 11155111; // Sepolia
     let derivation_path = create_derivation_path(&ic_cdk::caller());
-    let signer = IcpSigner::new(derivation_path, &ecdsa_key_name, Some(chain_id))
+    let signer = IcpSigner::new(derivation_path, &ecdsa_key_name, None)
         .await
         .unwrap();
 
