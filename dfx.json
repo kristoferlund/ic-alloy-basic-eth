@@ -16,12 +16,12 @@
       "type": "custom",
       "wasm": "https://github.com/internet-computer-protocol/evm-rpc-canister/releases/latest/download/evm_rpc.wasm.gz"
     },
-    "backend": {
-      "candid": "src/backend/backend.did",
+    "basic_eth": {
+      "candid": "src/basic_eth/basic_eth.did",
       "declarations": {
-        "output": "src/backend/declarations"
+        "output": "src/basic_eth/declarations"
       },
-      "package": "backend",
+      "package": "basic_eth",
       "type": "rust"
     }
   },

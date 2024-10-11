@@ -1,4 +1,4 @@
-# ic-alloy basic template
+# ic-alloy, basic Ethereum multi-user wallet
 
 [Alloy](https://alloy.rs/) is the next generation of Ethereum support libraries,
 written in Rust and designed for scalability and performance. Alloy is a rewrite
@@ -7,12 +7,70 @@ Alloy includes built in support for transports like HTTP, WebSockets and IPC.
 
 **Alloy now also works with the Internet Computer (ICP)!**
 
-This canister implements three methods:
+## Canister methods
 
-- `get_address`: Generates an Ethereum for an IC principal.
-- `get_balance`: Returns the ETH balance of the Ethereum address controlled by a
-  principal.
-- `send_eth`: Sends ETH from the canister Ethereum address to any recipient.
+### `get_address`
+
+Get the Ethereum address for the calling principal or for the principal
+specified in the call parameters.
+
+Call signature:
+
+```
+get_address : (owner: opt principal) -> (text);
+```
+
+Get the Ethereum address for the calling principal:
+
+```bash
+dfx canister call basic_eth get_address
+```
+
+Get the Ethereum address for a specified principal:
+
+```bash
+dfx canister call basic_eth get_address '(opt principal "hkroy-sm7vs-yyjs7-ekppe-qqnwx-hm4zf-n7ybs-titsi-k6e3k-ucuiu-uqe")'
+```
+
+### `get_balance`
+
+Returns the ETH balance of the Ethereum address controlled by a principal.
+
+Call signature:
+
+```
+get_balance : (owner: opt principal) -> (text);
+```
+
+Get the ETH balance for the calling principal:
+
+```bash
+dfx canister call basic_eth get_balance
+```
+
+Get the ETH balance for a specified principal:
+
+```bash
+dfx canister call basic_eth get_balance '(opt principal "hkroy-sm7vs-yyjs7-ekppe-qqnwx-hm4zf-n7ybs-titsi-k6e3k-ucuiu-uqe")'
+```
+
+### `send_eth`
+
+Sends ETH from the Ethereum controlled by the calling principal to any
+recipient.
+
+Call signature:
+
+```
+send_eth : (to: text, amount: Wei) -> (text);
+```
+
+Send ETH by specifying receiver address and ETH amount (in wei):
+
+```bash
+dfx canister call basic_eth send_eth '("0xa32aECda752cF4EF89956e83d60C04835d4FA867", 1)'
+
+```
 
 ## Run locally
 

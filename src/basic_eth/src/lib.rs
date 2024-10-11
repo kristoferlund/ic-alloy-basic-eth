@@ -29,4 +29,12 @@ fn create_derivation_path(principal: &Principal) -> Vec<Vec<u8>> {
     .collect()
 }
 
+fn get_caller_pricipal() -> Principal {
+    let principal = ic_cdk::caller();
+    if principal == Principal::anonymous() {
+        panic!("Calls with the anonymous principal are not allowed.");
+    }
+    principal
+}
+
 export_candid!();

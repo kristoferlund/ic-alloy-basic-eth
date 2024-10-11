@@ -1,4 +1,4 @@
-use crate::{create_derivation_path, get_ecdsa_key_name};
+use crate::{create_derivation_path, get_caller_pricipal, get_ecdsa_key_name};
 use alloy::{
     network::{EthereumWallet, TransactionBuilder},
     primitives::{Address, U256},
@@ -12,12 +12,15 @@ use core::panic;
 
 #[ic_cdk::update]
 async fn send_eth(to_address: String, amount: Nat) -> String {
+    // Calls to send_eth need to be authenticated
+    let principal = get_caller_pricipal();
+
     let to_address =
         Address::parse_checksummed(to_address, None).unwrap_or_else(|_| panic!("Invalid address"));
 
     // Setup signer
     let ecdsa_key_name = get_ecdsa_key_name();
-    let derivation_path = create_derivation_path(&ic_cdk::caller());
+    let derivation_path = create_derivation_path(&principal);
     let signer = IcpSigner::new(derivation_path, &ecdsa_key_name, None)
         .await
         .unwrap();
