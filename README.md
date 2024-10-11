@@ -1,4 +1,7 @@
-# ic-alloy, basic Ethereum multi-user wallet
+# A basic Ethereum multi-user wallet
+
+Use this repository as a starting point for building ICP projects that interact
+with Ethereum.
 
 [Alloy](https://alloy.rs/) is the next generation of Ethereum support libraries,
 written in Rust and designed for scalability and performance. Alloy is a rewrite
