@@ -1,4 +1,4 @@
-use crate::{create_derivation_path, get_caller_pricipal, get_ecdsa_key_name, get_rpc_service};
+use crate::{auth_guard, create_derivation_path, get_ecdsa_key_name, get_rpc_service};
 use alloy::{
     network::{EthereumWallet, TransactionBuilder},
     primitives::{Address, U256},
@@ -8,22 +8,24 @@ use alloy::{
     transports::icp::IcpConfig,
 };
 use candid::Nat;
-use core::panic;
 
 #[ic_cdk::update]
-async fn send_eth(to_address: String, amount: Nat) -> String {
+async fn send_eth(to_address: String, amount: Nat) -> Result<String, String> {
     // Calls to send_eth need to be authenticated
-    let principal = get_caller_pricipal();
+    auth_guard()?;
 
-    let to_address =
-        Address::parse_checksummed(to_address, None).unwrap_or_else(|_| panic!("Invalid address"));
+    // From address is the method caller
+    let from_principal = ic_cdk::caller();
+
+    // Make sure we have a correct to address
+    let to_address = Address::parse_checksummed(to_address, None).map_err(|e| e.to_string())?;
 
     // Setup signer
     let ecdsa_key_name = get_ecdsa_key_name();
-    let derivation_path = create_derivation_path(&principal);
+    let derivation_path = create_derivation_path(&from_principal);
     let signer = IcpSigner::new(derivation_path, &ecdsa_key_name, None)
         .await
-        .unwrap();
+        .map_err(|e| e.to_string())?;
 
     // Setup provider
     let wallet = EthereumWallet::from(signer);
@@ -46,8 +48,8 @@ async fn send_eth(to_address: String, amount: Nat) -> String {
         Ok(pending_tx_builder) => {
             let tx_hash = *pending_tx_builder.tx_hash();
             let tx_response = provider.get_transaction_by_hash(tx_hash).await.unwrap();
-            format!("{:?}", tx_response)
+            Ok(format!("{:?}", tx_response))
         }
-        Err(e) => format!("Error: {:?}", e),
+        Err(e) => Err(e.to_string()),
     }
 }

@@ -39,12 +39,13 @@ fn create_derivation_path(principal: &Principal) -> Vec<Vec<u8>> {
     .collect()
 }
 
-fn get_caller_pricipal() -> Principal {
-    let principal = ic_cdk::caller();
-    if principal == Principal::anonymous() {
-        panic!("Calls with the anonymous principal are not allowed.");
+fn auth_guard() -> Result<(), String> {
+    match ic_cdk::caller() {
+        caller if caller == Principal::anonymous() => {
+            Err("Calls with the anonymous principal are not allowed.".to_string())
+        }
+        _ => Ok(()),
     }
-    principal
 }
 
 export_candid!();
