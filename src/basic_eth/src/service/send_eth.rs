@@ -86,7 +86,8 @@ async fn send_eth(to_address: String, amount: Nat) -> Result<String, String> {
             match tx_response {
                 Some(tx) => {
                     // The transaction has been mined and included in a block, the nonce
-                    // has been consumed. Save it to thread-local storage.
+                    // has been consumed. Save it to thread-local storage. Next transaction
+                    // for this address will use a nonce that is = this nonce + 1
                     ADDRESS_NONCES.with_borrow_mut(|nonces| {
                         nonces.insert(from_address, tx.nonce);
                     });
