@@ -11,8 +11,8 @@ use alloy::{
 };
 use candid::Nat;
 
-// To minimize the number of nonce requests, we store the nonce for each address
-// in a thread-local HashMap.
+// To minimize the number of nonce requests, we store the latest nonce for each wallet
+// address in a thread-local HashMap.
 thread_local! {
     static ADDRESS_NONCES: RefCell<HashMap<Address, u64>> = RefCell::new(HashMap::new());
 }
@@ -85,6 +85,8 @@ async fn send_eth(to_address: String, amount: Nat) -> Result<String, String> {
 
             match tx_response {
                 Some(tx) => {
+                    // The transaction has been mined and included in a block, the nonce
+                    // has been consumed. Save it to thread-local storage.
                     ADDRESS_NONCES.with_borrow_mut(|nonces| {
                         nonces.insert(from_address, tx.nonce);
                     });
