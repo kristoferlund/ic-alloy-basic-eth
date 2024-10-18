@@ -46,15 +46,9 @@ async fn send_eth(to_address: String, amount: Nat) -> Result<String, String> {
         .on_icp(config);
 
     // Attempt to get nonce from thread-local storage
-    let maybe_nonce = ADDRESS_NONCES.with(|nonces| {
-        let mut nonces = nonces.borrow_mut();
-        if let Some(nonce) = nonces.get_mut(&from_address) {
-            // If a nonce exists, increment it
-            *nonce += 1;
-            Some(*nonce)
-        } else {
-            None
-        }
+    let maybe_nonce = ADDRESS_NONCES.with_borrow(|nonces| {
+        // If a nonce exists, the next nonce to use is latest nonce + 1
+        nonces.get(&from_address).map(|nonce| nonce + 1)
     });
 
     // If no nonce exists, get it from the provider
